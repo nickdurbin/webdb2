@@ -4,7 +4,7 @@ const db = require('../../../data/dbConfig')
 
 router.get('/', async (req, res, next) => {
   try {
-    res.json(await db("cars").select())
+    return res.json(await db("cars").select())
   } catch (error) {
     next(error)
   }
@@ -13,7 +13,7 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const car = await db("cars").where("id", req.params.id).select()
-    res.json(car)
+    return res.json(car)
   } catch (error) {
     next(error)
   }
@@ -22,7 +22,8 @@ router.get('/:id', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const [id] = await db("cars").insert(req.body)
-    res.json(await db("cars").where("id", req.params.id).first())
+    const newCar = await db("cars").where('id', id).first()
+    return res.status(201).json(newCar)
   } catch (error) {
     next(error)
   }
@@ -31,7 +32,7 @@ router.post('/', async (req, res, next) => {
 router.put('/:id', async (req, res, next) => {
   try {
     await db("cars").where("id", req.params.id).update(req.body)
-    res.json(await db("cars").where("id", req.params.id).first())
+    return res.json(await db("cars").where("id", req.params.id).first())
   } catch (error) {
     next(error)
   }
@@ -40,7 +41,7 @@ router.put('/:id', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
   try {
     await db("cars").where("id", req.params.id).del()
-    res.status(204).json({ id: req.params.id })
+    return res.status(204).json({ id: req.params.id })
   } catch (error) {
     next(error)
   }
