@@ -2,41 +2,45 @@ const express = require('express')
 const router = express.Router()
 const db = require('../../../data/dbConfig')
 
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
-
+    res.json(await db("cars").select())
   } catch (error) {
     next(error)
   }
 })
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   try {
-
+    const car = await db("cars").where("id", req.params.id).select()
+    res.json(car)
   } catch (error) {
     next(error)
   }
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
-
+    const [id] = await db("cars").insert(req.body)
+    res.json(await db("cars").where("id", req.params.id).first())
   } catch (error) {
     next(error)
   }
 })
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
   try {
-
+    await db("cars").where("id", req.params.id).update(req.body)
+    res.json(await db("cars").where("id", req.params.id).first())
   } catch (error) {
     next(error)
   }
 })
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
   try {
-
+    await db("cars").where("id", req.params.id).del()
+    res.status(204).json({ id: req.params.id })
   } catch (error) {
     next(error)
   }
