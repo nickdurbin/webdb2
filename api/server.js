@@ -3,7 +3,7 @@ const server = express()
 const middleware = require('./middleware')
 const routes = require('./routes')
 
-server.use(json())
+server.use(express.json())
 middleware(server)
 routes(server)
 
